@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class AnimalsController extends Controller
 {
     //
-
+    
     public function index()
     {
         echo "Menampilkan data animals";
