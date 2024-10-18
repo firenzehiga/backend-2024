@@ -6,22 +6,45 @@ use Illuminate\Http\Request;
 
 class AnimalsController extends Controller
 {
-    //
+    public $animals = ["Kucing", "Ayam", "Ikan"];
     
     public function index()
     {
-        echo "Menampilkan data animals";
+        foreach ($this->animals as $animal) {
+            echo " - $animal<br>";
+            
+        }
     }
-    public function store()
+    public function store(Request $request)
     {
-        echo "Menambahkan data animals";
+        $animalName = $request->name;
+        array_push($this->animals, $animalName);
+        $this->index();
     }
-    public function update($id)
+    public function update(Request $request, $id)
     {
-        echo "Memperbarui data animals";
+        if(!isset($this->animals[$id])) {
+            echo "hewan id $id tidak ditemukan";
+            
+        }else{
+            echo "Mengupdate data hewan id $id <br><br>";
+            $animalName = $request->name;
+            $this->animals[$id] = $animalName;
+            $this->index();
+        }
     }
-    public function destroy()
+    public function destroy($id)
     {
-        echo "Menghapus data animals";
+        
+        if(isset($this->animals[$id]) == false) {
+            echo "hewan id $id tidak ditemukan";
+                        
+        }else{
+            echo "Menghapus data hewan id $id <br><br>";
+            array_splice($this->animals, $id, 1);
+            $this->index();
+
+        }
+        
     }
 }
