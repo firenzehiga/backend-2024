@@ -11,12 +11,18 @@ class StudentController extends Controller
         #kalo pake query builder student = DB::table('student')-get();
         $students = Student::all(); #menggunakan eloquent
 
-        $data = [
-            'message' => 'Get  all student',
-            'data' => $students,
-        ];
-
-        return response()->json($data, 200);
+        if($students){
+            $data = [
+                'message' => 'Mendapatkan semua data Student',
+                'data' => $students,
+            ];
+            return response()->json($data, 200);
+        }else{
+            $data = [
+                'message' => 'Data Student tidak ditemukan',
+            ];
+            return response()->json($data, 404);
+        }
     }
 
     public function store(Request $request)
@@ -42,28 +48,69 @@ class StudentController extends Controller
     }
 
     public function update($id, Request $request){
+        # mencari id student
         $students = Student::find($id);
-        $students->update($request->all());
-
-        $data = [
-            'message' => 'Student is updated successfully',
-            'data' => $students,
-        ];
-
-        return response()->json($data, 200);    
-    }
+        # cek apakah id ada
+        if ($students){
+            $input = [
+                'nama'  => $request->nama ?? $students->nama,
+                'nim'   => $request->nim ?? $students->nim,
+                'email' => $request->email ?? $students->email,
+                'jurusan' => $request->jurusan ?? $students->jurusan,
+            ];
+            # melakukan update data
+            $students->update($input);
+    
+            $data = [
+                'message' => 'Data Student berhasil diubah',
+                'data' => $students,
+            ];
+    
+            # mengembalikan data json dan kode 200
+            return response()->json($data, 200);    
+        } else {
+            
+            $data = [
+                    'message' => 'Data Student tidak ditemukan',
+                ];
+                
+            # mengembalikan data json dan kode 404
+            return response()->json($data, 404);
+        }
+    } 
 
     public function delete($id){
         $students = Student::find($id);
-        $students->delete();
-
-        $data = [
-            'message' => 'Student is deleted successfully',
-            'data' => $students,
-        ];
-
-        return response()->json($data, 200);
+        
+        if($students){
+            $students->delete();
+            $data = [
+                'message' => 'Data Student berhasil dihapus',
+            ];
+            return response()->json($data, 200);
+        }else{
+            $data = [
+                'message' => 'Data Student tidak ditemukan',
+            ];
+            return response()->json($data, 404);
+        }
     }
     
+    public function show($id, ){
+        $students = Student::find($id);
+
+        if($students){
+            $data = [
+                'message' => ' Detail Data Student ditemukan',
+                'data' => $students,
+            ];
+            return response()->json($data, 200);
+        }else{
+            $data = [
+                'message' => 'Detail Data Student tidak ditemukan',
+            ];
+            return response()->json($data, 404);
+        }
+    }
 
 }
