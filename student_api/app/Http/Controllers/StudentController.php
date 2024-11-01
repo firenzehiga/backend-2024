@@ -11,15 +11,15 @@ class StudentController extends Controller
         #kalo pake query builder student = DB::table('student')-get();
         $students = Student::all(); #menggunakan eloquent
 
-        if($students){
+        if($students->count() > 0){
             $data = [
-                'message' => 'Mendapatkan semua data Student',
+                'message' => 'Mendapatkan data Student',
                 'data' => $students,
             ];
             return response()->json($data, 200);
         }else{
             $data = [
-                'message' => 'Data Student tidak ditemukan',
+                'message' => 'Tidak ada data Student',
             ];
             return response()->json($data, 404);
         }
@@ -27,19 +27,19 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $input = [
-            'nama'  => $request->nama,
-            'nim'   => $request->nim,
-            'email' => $request->email,
-            'jurusan' => $request->jurusan
-
-        ];
-
+        #validasi data
+        $validation = $request->validate([
+        'nama'    => 'required|string|max:255',
+        'nim'     => 'required|string|max:20',
+        'email'   => 'required|email|unique:students,email|max:255',
+        'jurusan' => 'required|string|max:100',
+        ]);
+    
         #menggunakan model Student untuk tambah data
-        $students = Student::create($input);
+        $students = Student::create($validation);
 
         $data = [
-            'message' => 'Student is created successfully',
+            'message' => 'Data student berhasil ditambahkan',
             'data' => $students,
         ];
 
@@ -47,36 +47,31 @@ class StudentController extends Controller
         return response()->json($data, 201);
     }
 
-    public function update($id, Request $request){
+    public function update(Request $request, $id ){
         # mencari id student
         $students = Student::find($id);
-        # cek apakah id ada
-        if ($students){
-            $input = [
-                'nama'  => $request->nama ?? $students->nama,
-                'nim'   => $request->nim ?? $students->nim,
-                'email' => $request->email ?? $students->email,
-                'jurusan' => $request->jurusan ?? $students->jurusan,
-            ];
-            # melakukan update data
-            $students->update($input);
-    
+       #validasi data
+        $validation = $request->validate([
+        'nama'    => 'sometimes|string|max:255',
+        'nim'     => 'sometimes|string|max:20' . $students->id,
+        'email'   => 'sometimes|email|max:255|unique:s tudents,email,' . $students->id,
+        'jurusan' => 'sometimes|string|max:100',
+        ]);
+
+        if($students){
+            $students->update($validation);
             $data = [
-                'message' => 'Data Student berhasil diubah',
+                'message' => 'Data student berhasil diupdate',
                 'data' => $students,
             ];
-    
-            # mengembalikan data json dan kode 200
-            return response()->json($data, 200);    
-        } else {
-            
+            return response()->json($data, 200);
+        }else{
             $data = [
-                    'message' => 'Data Student tidak ditemukan',
-                ];
-                
-            # mengembalikan data json dan kode 404
+                'message' => 'Data student tidak ditemukan',
+            ];
             return response()->json($data, 404);
         }
+       
     } 
 
     public function delete($id){

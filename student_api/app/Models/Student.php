@@ -8,7 +8,7 @@ class Student extends Model
 {
     protected $table = 'students';
     protected $fillable = ['nama', 'nim', 'email', 'jurusan'];
-    public $timestamps = false;
+    // public $timestamps = false;
     #membuat fungsi getAllStudents di model Student
 //    public static function getAllStudents()
 //    {
