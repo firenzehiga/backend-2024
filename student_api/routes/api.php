@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\AuthController;
 
 
 
@@ -10,7 +11,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+# membuat endpoint students dan menambahkan authentication sanctum
+Route::get('/student', [StudentController::class, 'index'])->middleware('auth:sanctum');
 # route students
 Route::get('/student', [StudentController::class, 'index']);
 # route store untuk menambahkan data
@@ -21,3 +23,7 @@ Route::put('/student/{id}', [StudentController::class, 'update']);
 Route::delete('/student/{id}', [StudentController::class, 'delete']);
 # route show untuk menampilkan detail data
 Route::get('/student/{id}', [StudentController::class, 'show']);
+# route login
+Route::post('/login', [AuthController::class, 'login']);
+# route register
+Route::post('/register', [AuthController::class, 'register']);

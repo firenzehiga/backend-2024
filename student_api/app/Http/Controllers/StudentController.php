@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -27,16 +28,32 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        #validasi data
-        $validation = $request->validate([
-        'nama'    => 'required|string|max:255',
-        'nim'     => 'required|string|max:20',
-        'email'   => 'required|email|unique:students,email|max:255',
-        'jurusan' => 'required|string|max:100',
-        ]);
+        // #validasi data
+        // $validation = $request->validate([
+        // 'nama'    => 'required|string|max:255',
+        // 'nim'     => 'required|numeric|max:20',
+        // 'email'   => 'required|email|unique:students,email|max:255',
+        // 'jurusan' => 'required|string|max:100',
+        // ]);
     
+        #cara lain validasi dengan menggunakan method Validator
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|alpha|max:255',
+            'nim' => 'required|unique:students|numeric',
+            'email' => 'required|unique:students|max:255|email',
+            'jurusan' => 'required|string|max:100',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([   
+                'message' => 'validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         #menggunakan model Student untuk tambah data
-        $students = Student::create($validation);
+        $students = Student::create($request->all());
+        // $students = Student::create($validation);
 
         $data = [
             'message' => 'Data student berhasil ditambahkan',
@@ -53,8 +70,8 @@ class StudentController extends Controller
        #validasi data
         $validation = $request->validate([
         'nama'    => 'sometimes|string|max:255',
-        'nim'     => 'sometimes|string|max:20' . $students->id,
-        'email'   => 'sometimes|email|max:255|unique:s tudents,email,' . $students->id,
+        'nim'     => 'sometimes|numeric' . $students->id,
+        'email'   => 'sometimes|email|max:255|unique:students,email,' . $students->id,
         'jurusan' => 'sometimes|string|max:100',
         ]);
 
