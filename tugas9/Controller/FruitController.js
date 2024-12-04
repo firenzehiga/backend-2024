@@ -43,14 +43,21 @@ const store = (name) => {
  * @param {number} position - Posisi atau index yang ingin diupdate.
  * @param {string} name - Nama buah yang baru.
  */
-const update = (position, name) => {
-    if (position < fruits.length) {
-        fruits[position] = name;
-        index();
-    } else {
-        console.log(`Indeks ${position} tidak ditemukan!`);
-    }
-};
+// const update = (position, name) => {
+//     if (position < fruits.length) {
+//         fruits[position] = name;
+//         index();
+//     } else {
+//         console.log(`Indeks ${position} tidak ditemukan!`);
+//     }
+// };
+
+    // coba membuat kondisi menggunakan ternary operator
+    const update = (position, name) => {
+        position < fruits.length
+            ? (fruits[position] = name, index())
+            : console.log(`Indeks ${position} tidak ditemukan!`);
+    };
 
 /**
  * TODO 7:
@@ -62,14 +69,22 @@ const update = (position, name) => {
  *
  * @hint - Gunakan method splice
  */
-const destroy = (position) => {
-    if (position < fruits.length) {
-        fruits.splice(position, 1);
-        index();
-    } else {
-        console.log(`\nIndeks ${position} tidak ditemukan!`);
-    }
-};
+// const destroy = (position) => {
+//     if (position < fruits.length) {
+//         fruits.splice(position, 1);
+//         index();
+//     } else {
+//         console.log(`\nIndeks ${position} tidak ditemukan!`);
+//     }
+// };
+
+    // coba membuat kondisi menggunakan ternary operator
+    const destroy = (position) => {
+        position < fruits.length 
+            ? (fruits.splice(position, 1), index()) 
+            : console.log(`\nIndeks ${position} tidak ditemukan!`);
+    };
+
 /**
  * TODO 8: export method index, store, update, dan destroy
  */
