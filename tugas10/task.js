@@ -5,10 +5,12 @@
 
 // Producing asynchronous menggunakan Promise
 const showDownload = (result) => {
-  console.log("Download selesai");
-  console.log(`Hasil Download: ${result}`); // Menggunakan ES6 literals
-};
-
+  return new Promise((resolve) => {
+    console.log("Download selesai");
+    console.log(`Hasil Download: ${result}`); // Menggunakan ES6 literals
+    resolve(result);  // Menyelesaikan promise dengan hasil
+  });
+}
 /**
  * Fungsi untuk download file
  * @param {function} Promises
@@ -24,13 +26,9 @@ const download = () => {
 
 // Consuming promise menggunakan Async Await
 const main = async () => {
-  try {
-    console.log("Mendownload selama 3 detik...")
-    const result = await download(); // Menunggu proses promise dari download 
-    showDownload(result);           // Memanggil showDownload dengan hasil saat promise download selesai
-  } catch (error) {
-    console.error(`Download gagal: ${error}`); // Menangkap error jika Promise gagal (Menggunakan ES6 literals) 
-  }
+  const result = await download(); // Menunggu proses promise dari download 
+  showDownload(result);           // Memanggil showDownload dengan hasil saat promise download selesai
+
 };
 
 
